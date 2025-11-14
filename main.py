@@ -5,6 +5,7 @@ Entry point principale per il progetto
 
 import sys
 from pathlib import Path
+from typing import Optional
 
 # Import dei nostri moduli
 from ingestion import PDFIngestion
@@ -12,6 +13,8 @@ from embeddings import EmbeddingSystem
 from query_system import QuerySystem
 from llm_handler import LLMHandler
 from rag_pipeline import RAGPipeline
+
+import os
 
 
 class RAGSystem:
@@ -21,7 +24,9 @@ class RAGSystem:
         self,
         persist_directory: str = "./chroma_db",
         collection_name: str = "pdf_knowledge_base",
-        llm_model: str = "mistral:7b"
+        llm_model: str = "mistral:7b",
+        tavily_api_key: Optional[str] = None,
+        enable_web_search: bool = True
     ):
         """
         Inizializza il sistema RAG completo
@@ -30,13 +35,15 @@ class RAGSystem:
             persist_directory: Directory per ChromaDB
             collection_name: Nome collection
             llm_model: Modello Ollama da usare
+            tavily_api_key: API key per Tavily (web search)
+            enable_web_search: Se True, abilita web fallback
         """
         print("="*70)
         print("🚀 INITIALIZING RAG SYSTEM")
         print("="*70)
         
         # 1. PDF Ingestion
-        print("\n[1/4] Setting up PDF Ingestion...")
+        print("\n[1/5] Setting up PDF Ingestion...")
         self.pdf_ingestion = PDFIngestion(
             chunk_size=1000,
             chunk_overlap=200,
@@ -45,7 +52,7 @@ class RAGSystem:
         print("   ✓ PDF Ingestion ready")
         
         # 2. Embedding System
-        print("\n[2/4] Setting up Embedding System...")
+        print("\n[2/5] Setting up Embedding System...")
         self.embedding_system = EmbeddingSystem(
             model_name="all-MiniLM-L6-v2",
             collection_name=collection_name,
@@ -53,7 +60,7 @@ class RAGSystem:
         )
         
         # 3. Query System
-        print("\n[3/4] Setting up Query System...")
+        print("\n[3/5] Setting up Query System...")
         self.query_system = QuerySystem(
             embedding_system=self.embedding_system,
             confidence_threshold_high=0.6,
@@ -62,17 +69,36 @@ class RAGSystem:
         print("   ✓ Query System ready")
         
         # 4. LLM Handler
-        print("\n[4/4] Setting up LLM Handler...")
+        print("\n[4/5] Setting up LLM Handler...")
         self.llm_handler = LLMHandler(
             model_name=llm_model,
             temperature=0.3
         )
         
-        # 5. RAG Pipeline
+        # 5. Web Search Handler (opzionale)
+        print("\n[5/5] Setting up Web Search...")
+        web_search_handler = None
+        
+        if enable_web_search:
+            try:
+                from web_search_handler import WebSearchHandler
+                web_search_handler = WebSearchHandler(
+                    api_key=tavily_api_key,
+                    max_results=5,
+                    search_depth="basic"
+                )
+            except (ValueError, ImportError) as e:
+                print(f"   ⚠️  Web search non disponibile: {e}")
+                print("   Continuando senza web fallback...")
+        else:
+            print("   ⚠️  Web search disabilitato")
+        
+        # 6. RAG Pipeline
         self.rag_pipeline = RAGPipeline(
             query_system=self.query_system,
             llm_handler=self.llm_handler,
-            enable_web_fallback=False
+            web_search_handler=web_search_handler,
+            enable_web_fallback=enable_web_search and web_search_handler is not None
         )
         
         print("\n" + "="*70)
@@ -175,11 +201,35 @@ class RAGSystem:
 def main():
     """Main function - entry point"""
     
+    # Ottieni Tavily API key
+    print("\n🔑 Web Search Configuration:")
+    print("="*70)
+    
+    # Prova a leggere da environment variable
+    tavily_key = os.getenv("TAVILY_API_KEY")
+    
+    if tavily_key:
+        print("✓ Tavily API key trovata in environment variable")
+        enable_web = True
+    else:
+        print("⚠️  Tavily API key non trovata in environment")
+        user_input = input("\nVuoi inserire la API key ora? (y/n): ").strip().lower()
+        
+        if user_input == 'y':
+            tavily_key = input("Inserisci Tavily API key: ").strip()
+            enable_web = True if tavily_key else False
+        else:
+            print("Continuando SENZA web search...")
+            tavily_key = None
+            enable_web = False
+    
     # Initialize RAG System
     rag = RAGSystem(
         persist_directory="./chroma_db",
         collection_name="python_tutorial",
-        llm_model="mistral:7b"
+        llm_model="mistral:7b",
+        tavily_api_key=tavily_key,
+        enable_web_search=enable_web
     )
     
     # Check if database is empty
