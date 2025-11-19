@@ -1,7 +1,7 @@
 ## SimpleAgent ##
-### RAG agent per Q&A su pdf caricati, con fallback su websearch e UI minimal ###
+#### RAG agent per Q&A su pdf caricati, con fallback su websearch e UI minimal ####
 
-#### Elenco file ####
+### Elenco file ###
 
 | File | Descrizione |
 |------|-------------|
@@ -14,4 +14,4 @@
 | main.py | main.py |
 | streamlit_ui.py | UI |
 
-+ file/cartelle di progetto: pycache, chroma_db, data, venv_SimpleAgent, gitignore
+\+ file/cartelle di progetto: pycache, chroma_db, data, venv_SimpleAgent, gitignore
