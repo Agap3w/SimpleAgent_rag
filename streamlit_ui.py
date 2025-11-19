@@ -76,7 +76,7 @@ def initialize_rag_system(tavily_key: Optional[str], enable_web: bool):
         try:
             rag = RAGSystem(
                 persist_directory="./chroma_db",
-                collection_name="streamlit_kb",
+                collection_name="pdf_knowledge_base",
                 llm_model="mistral:7b",
                 tavily_api_key=tavily_key if enable_web else None,
                 enable_web_search=enable_web
@@ -84,7 +84,19 @@ def initialize_rag_system(tavily_key: Optional[str], enable_web: bool):
             
             st.session_state.rag_system = rag
             st.session_state.total_docs = rag.embedding_system.collection.count()
-            st.success("✅ RAG System ready!")
+            
+            # Auto-carica PDF tutorial se DB vuoto
+            if st.session_state.total_docs == 0:
+                default_pdf = Path("./data/SimpleAgent- Pytutorial.pdf")
+                if default_pdf.exists():
+                    rag.ingest_pdf(str(default_pdf))
+                    st.session_state.total_docs = rag.embedding_system.collection.count()
+                    st.success(f"✅ RAG System ready! Pre-loaded {st.session_state.total_docs} chunks from tutorial.")
+                else:
+                    st.success("✅ RAG System ready! (No default PDF found)")
+            else:
+                st.success(f"✅ RAG System ready! {st.session_state.total_docs} documents in KB.")
+            
             return True
         except Exception as e:
             st.error(f"❌ Error initializing system: {e}")

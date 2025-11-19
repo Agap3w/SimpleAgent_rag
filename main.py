@@ -226,7 +226,7 @@ def main():
     # Initialize RAG System
     rag = RAGSystem(
         persist_directory="./chroma_db",
-        collection_name="python_tutorial",
+        collection_name="pdf_knowledge_base",
         llm_model="mistral:7b",
         tavily_api_key=tavily_key,
         enable_web_search=enable_web

@@ -1,7 +1,6 @@
 """
 RAG Pipeline - Integrazione completa di tutto il sistema
 Query → Confidence → LLM/Web Fallback → Response
-UPDATED: Con Web Search Integration (Step 5)
 """
 
 from typing import Dict, Any, Optional
