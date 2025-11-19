@@ -3,6 +3,8 @@
 
 #### Elenco file ####
 
+| File | Descrizione |
+|------|-------------|
 | ingestion.py | Estrae testo da PDF e lo divide in chunk |
 | embeddings.py | Converte chunk in vettori numerici e li salva in ChromaDB |
 | query_system.py | Cerca chunk simili e calcola confidence (decide: PDF o Web?) |
@@ -12,4 +14,4 @@
 | main.py | main.py |
 | streamlit_ui.py | UI |
 
-| pycache, chroma_db, data, venv_SimpleAgent, gitignore | file/cartelle di progetto |
++ file/cartelle di progetto: pycache, chroma_db, data, venv_SimpleAgent, gitignore
