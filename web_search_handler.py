@@ -6,7 +6,6 @@ Fallback quando confidence è basso
 import os
 from typing import List, Dict, Any, Optional
 import requests
-from datetime import datetime
 
 
 class WebSearchHandler:
@@ -212,87 +211,3 @@ class WebSearchHandler:
         except Exception as e:
             print(f"❌ Test fallito: {e}")
             return False
-
-
-# ============= ESEMPIO D'USO =============
-
-if __name__ == "__main__":
-    print("="*70)
-    print("STEP 5: WEB SEARCH HANDLER TEST")
-    print("="*70)
-    
-    # Inizializza (inserisci la tua API key qui o usa environment variable)
-    # Opzione 1: Passa direttamente
-    API_KEY = "tvly-YOUR_API_KEY_HERE"  # ← SOSTITUISCI CON LA TUA KEY
-    
-    # Opzione 2: Usa environment variable
-    # Esegui prima in terminal: $env:TAVILY_API_KEY="tvly-your-key"
-    # API_KEY = None  # Leggerà da environment
-    
-    try:
-        web_search = WebSearchHandler(
-            api_key=API_KEY,
-            max_results=5,
-            search_depth="basic"
-        )
-    except ValueError as e:
-        print(f"\n❌ {e}")
-        print("\nPer usare questo modulo:")
-        print("1. Vai su https://tavily.com")
-        print("2. Ottieni la tua API key")
-        print("3. Sostituisci 'tvly-YOUR_API_KEY_HERE' nel codice")
-        print("   OPPURE")
-        print("4. Imposta env variable: $env:TAVILY_API_KEY='tvly-your-key'")
-        exit(1)
-    
-    # Test 1: Verifica connessione
-    print("\n" + "="*70)
-    print("TEST 1: Connection Test")
-    print("="*70)
-    web_search.test_connection()
-    
-    # Test 2: Ricerca base
-    print("\n" + "="*70)
-    print("TEST 2: Basic Search")
-    print("="*70)
-    
-    query = "What is the latest Python version in 2024?"
-    print(f"\nQuery: {query}")
-    
-    results = web_search.search(
-        query=query,
-        include_answer=True,
-        verbose=True
-    )
-    
-    # Mostra risposta di Tavily
-    tavily_answer = web_search.get_tavily_answer(results)
-    if tavily_answer:
-        print(f"\n📝 TAVILY ANSWER:")
-        print("="*70)
-        print(tavily_answer)
-        print("="*70)
-    
-    # Mostra risultati formattati
-    formatted = web_search.format_results(results, max_results=3)
-    print(f"\n🔍 TOP {len(formatted)} RESULTS:")
-    print("="*70)
-    
-    for i, result in enumerate(formatted, 1):
-        print(f"\n[{i}] {result['title']}")
-        print(f"    Score: {result['score']:.2f}")
-        print(f"    URL: {result['url']}")
-        print(f"    Content: {result['content'][:200]}...")
-    
-    # Test 3: Context assembly (per LLM)
-    print("\n" + "="*70)
-    print("TEST 3: Context Assembly for LLM")
-    print("="*70)
-    
-    context = web_search.create_web_context(results, max_results=2)
-    print(f"\nAssembled Context ({len(context)} chars):")
-    print(context[:500] + "...\n")
-    
-    print("="*70)
-    print("✅ WEB SEARCH HANDLER TEST COMPLETATO!")
-    print("="*70)

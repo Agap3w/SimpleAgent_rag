@@ -6,7 +6,7 @@ UPDATED: Con Web Search Integration (Step 5)
 
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
-from query_system import QuerySystem, QueryResult
+from query_system import QuerySystem
 from llm_handler import LLMHandler
 from web_search_handler import WebSearchHandler
 import time
@@ -266,102 +266,3 @@ Answer (based on the web search results above):"""
                     print(f"       Score: {source['score']:.2f}")
         
         print(f"\n{'='*70}\n")
-
-
-# ============= ESEMPIO D'USO COMPLETO =============
-
-if __name__ == "__main__":
-    from embeddings import EmbeddingSystem
-    from query_system import QuerySystem
-    from llm_handler import LLMHandler
-    from web_search_handler import WebSearchHandler
-    
-    print("="*70)
-    print("STEP 5: RAG PIPELINE WITH WEB FALLBACK TEST")
-    print("="*70)
-    
-    # Setup components
-    print("\n🔧 Initializing components...")
-    
-    # 1. Embedding System
-    embedding_system = EmbeddingSystem(
-        model_name="all-MiniLM-L6-v2",
-        collection_name="python_tutorial",
-        persist_directory="./chroma_db"
-    )
-    
-    # 2. Query System
-    query_system = QuerySystem(
-        embedding_system=embedding_system,
-        confidence_threshold_high=0.6,
-        confidence_threshold_low=0.4
-    )
-    
-    # 3. LLM Handler
-    llm_handler = LLMHandler(
-        model_name="mistral:7b",
-        temperature=0.3
-    )
-    
-    # 4. Web Search Handler
-    print("\n🌐 Setting up Web Search (Tavily)...")
-    TAVILY_API_KEY = "tvly-YOUR_KEY_HERE"  # ← INSERISCI LA TUA KEY
-    
-    try:
-        web_search = WebSearchHandler(
-            api_key=TAVILY_API_KEY,
-            max_results=5,
-            search_depth="basic"
-        )
-    except ValueError as e:
-        print(f"\n⚠️  {e}")
-        print("Continuando SENZA web fallback...")
-        web_search = None
-    
-    # 5. RAG Pipeline
-    rag_pipeline = RAGPipeline(
-        query_system=query_system,
-        llm_handler=llm_handler,
-        web_search_handler=web_search,
-        enable_web_fallback=True if web_search else False
-    )
-    
-    print("\n✅ All components ready!\n")
-    
-    # Test queries - mix di PDF e Web
-    test_queries = [
-        # Query che dovrebbe usare PDF (alta confidence)
-        "What are Python dictionaries?",
-        
-        # Query che dovrebbe usare WEB (bassa confidence - info recente)
-        "What is the latest Python version released in 2024?",
-        
-        # Query fuori dal PDF (dovrebbe usare web)
-        "Who is the current CEO of OpenAI?",
-    ]
-    
-    print("="*70)
-    print("🧪 TESTING RAG PIPELINE WITH WEB FALLBACK")
-    print("="*70)
-    
-    for i, query in enumerate(test_queries, 1):
-        print(f"\n\n{'#'*70}")
-        print(f"TEST QUERY {i}/{len(test_queries)}")
-        print(f"{'#'*70}")
-        
-        response = rag_pipeline.process_query(query, verbose=True)
-        
-        if i < len(test_queries):
-            input("\n⏸️  Press Enter for next query...")
-    
-    print("\n" + "="*70)
-    print("✅ RAG PIPELINE WITH WEB FALLBACK TEST COMPLETATO!")
-    print("="*70)
-    print("\nIl sistema ora:")
-    print("  ✅ Riceve query utente")
-    print("  ✅ Cerca nel knowledge base PDF")
-    print("  ✅ Calcola confidence score")
-    print("  ✅ Genera risposte con LLM (Mistral)")
-    print("  ✅ Web search fallback quando confidence basso")
-    print("  ✅ Fornisce citazioni da PDF e Web")
-    print("\n🎉 Step 5 COMPLETATO!")

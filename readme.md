@@ -7,7 +7,7 @@
 |------|-------------|
 | ingestion.py | Estrae testo da PDF e lo divide in chunk |
 | embeddings.py | Converte chunk in vettori numerici e li salva in ChromaDB |
-| query_system.py | Cerca chunk simili e calcola confidence (decide: PDF o Web?) |
+| query_system.py | Cerca chunk simili e calcola confidence score (per decidere PDF o web) |
 | llm_handler.py | Comunica con Mistral via Ollama |
 | web_search_handler.py | Fallback Tavily quando confidence basso |
 | rag_pipeline.py | Integra tutto in un flusso unico |

@@ -79,8 +79,7 @@ def initialize_rag_system(tavily_key: Optional[str], enable_web: bool):
                 collection_name="streamlit_kb",
                 llm_model="mistral:7b",
                 tavily_api_key=tavily_key if enable_web else None,
-                enable_web_search=enable_web,
-                enable_hallucination_detection=False  # Skip per velocità
+                enable_web_search=enable_web
             )
             
             st.session_state.rag_system = rag

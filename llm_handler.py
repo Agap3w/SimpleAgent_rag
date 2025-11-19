@@ -4,7 +4,7 @@ LLM Handler - Gestisce comunicazione con Ollama (Mistral)
 
 import requests
 import json
-from typing import Optional, Dict, Any
+from typing import Optional
 import time
 
 
@@ -219,58 +219,3 @@ Answer (based only on the context above):"""
         else:
             print("❌ Modello non risponde correttamente")
             return False
-
-
-# ============= ESEMPIO D'USO =============
-
-if __name__ == "__main__":
-    print("="*70)
-    print("STEP 4: LLM HANDLER TEST")
-    print("="*70)
-    
-    # Inizializza handler
-    llm = LLMHandler(
-        model_name="mistral:7b",
-        temperature=0.3  # Bassa per risposte più consistenti
-    )
-    
-    # Test 1: Verifica funzionamento base
-    print("\n" + "="*70)
-    print("TEST 1: Basic Response")
-    print("="*70)
-    llm.test_model()
-    
-    # Test 2: RAG Response (simulato)
-    print("\n" + "="*70)
-    print("TEST 2: RAG Response Simulation")
-    print("="*70)
-    
-    mock_context = """
-[Source 1: python_tutorial.pdf, Page 44, Relevance: 0.85]
-Python dictionaries are mutable mappings that store key-value pairs.
-They are created using curly braces {} or the dict() constructor.
-Example: my_dict = {"name": "Alice", "age": 30}
-
-[Source 2: python_tutorial.pdf, Page 45, Relevance: 0.72]
-Dictionary keys must be immutable (strings, numbers, tuples).
-Values can be of any type. Access values using square brackets: my_dict["name"]
-"""
-    
-    test_query = "What are Python dictionaries and how do I create them?"
-    
-    print(f"Query: {test_query}\n")
-    print("Generating response...\n")
-    
-    response = llm.generate_rag_response(
-        query=test_query,
-        context=mock_context,
-        verbose=True
-    )
-    
-    print("="*70)
-    print("📝 GENERATED ANSWER:")
-    print("="*70)
-    print(response)
-    print("="*70)
-    
-    print("\n✅ LLM Handler pronto per l'integrazione!")

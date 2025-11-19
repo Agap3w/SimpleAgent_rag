@@ -3,7 +3,6 @@ PDF Ingestion System for RAG
 Handles PDF loading, cleaning, and chunking with metadata
 """
 
-import os
 from typing import List, Dict, Any
 from pathlib import Path
 import re
@@ -198,27 +197,3 @@ class PDFIngestion:
         
         print(f"\n✅ Totale: {len(all_chunks)} chunks da {len(pdf_files)} PDF")
         return all_chunks
-
-
-if __name__ == "__main__":
-    # Inizializza il sistema
-    ingestion = PDFIngestion(
-        chunk_size=1000,      # ~200-250 parole
-        chunk_overlap=200,    # Overlap per contesto
-        min_chunk_size=100    # Scarta chunks piccoli
-    )
-    
-    # Opzione 1: Singolo PDF
-    chunks = ingestion.process_pdf("data/SimpleAgent- Pytutorial.pdf")
-    
-    # Opzione 2: Directory di PDF
-    # chunks = ingestion.process_directory("./pdfs")
-    
-    # Visualizza un esempio di chunk
-    if chunks:
-        print("\n" + "="*50)
-        print("ESEMPIO DI CHUNK:")
-        print("="*50)
-        example = chunks[0]
-        print(f"Testo: {example['text'][:200]}...")
-        print(f"\nMetadata: {example['metadata']}")

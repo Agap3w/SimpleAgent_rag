@@ -3,14 +3,11 @@ Embeddings Generation & ChromaDB Storage System
 Ottimizzato per GPU (RTX 3080)
 """
 
-import os
 from typing import List, Dict, Any
 import torch
 from sentence_transformers import SentenceTransformer
 import chromadb
 from chromadb.config import Settings
-from tqdm import tqdm
-
 
 class EmbeddingSystem:
     """Gestisce embeddings con GPU e storage in ChromaDB"""
@@ -208,56 +205,3 @@ class EmbeddingSystem:
             metadata={"hnsw:space": "cosine"}
         )
         print(f"✓ Collection ricreata vuota")
-
-
-# ============= ESEMPIO D'USO COMPLETO =============
-
-if __name__ == "__main__":
-    from ingestion import PDFIngestion
-    
-    # Step 1: Ingestion (dal codice precedente)
-    print("="*60)
-    print("STEP 1: PDF INGESTION")
-    print("="*60)
-    
-    ingestion = PDFIngestion(chunk_size=1000, chunk_overlap=200)
-    chunks = ingestion.process_pdf(r"data/SimpleAgent- Pytutorial.pdf")
-    
-    # Step 2: Embeddings + Storage
-    print("\n" + "="*60)
-    print("STEP 2: EMBEDDINGS & CHROMADB STORAGE")
-    print("="*60)
-    
-    embedding_system = EmbeddingSystem(
-        model_name="all-MiniLM-L6-v2",  # Veloce per testing
-        collection_name="python_tutorial",
-        persist_directory="./chroma_db"
-    )
-    
-    # Aggiungi chunks al DB
-    embedding_system.add_chunks_to_db(chunks, batch_size=64)  # Batch grande per GPU
-    
-    # Step 3: Test Search
-    print("\n" + "="*60)
-    print("STEP 3: TEST SIMILARITY SEARCH")
-    print("="*60)
-    
-    test_queries = [
-        "What are Python lists?",
-        "How do I use for loops?",
-        "What is a dictionary in Python?"
-    ]
-    
-    for query in test_queries:
-        print(f"\n🔍 Query: '{query}'")
-        results = embedding_system.search(query, n_results=3)
-        formatted = embedding_system.format_search_results(results)
-        
-        for result in formatted:
-            print(f"\n  [{result['rank']}] Similarity: {result['similarity_score']:.3f}")
-            print(f"  Source: {result['metadata']['source']} (Page {result['metadata']['page']})")
-            print(f"  Text: {result['text'][:150]}...")
-    
-    print("\n" + "="*60)
-    print("✅ SISTEMA PRONTO PER L'USO!")
-    print("="*60)
