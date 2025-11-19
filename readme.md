@@ -1,7 +1,7 @@
-*** SimpleAgent ***
-*** RAG agent per Q&A su pdf caricati, con fallback su websearch e UI minimal ***
+## SimpleAgent ##
+### RAG agent per Q&A su pdf caricati, con fallback su websearch e UI minimal ###
 
-** Elenco file **
+## Elenco file ##
 
 1. ingestion.py          → Estrae testo da PDF e lo divide in chunk
 2. embeddings.py         → Converte chunk in vettori numerici e li salva in ChromaDB
