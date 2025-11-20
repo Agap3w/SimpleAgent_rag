@@ -69,15 +69,22 @@ streamlit run streamlit_ui.py
 ## 📁 Project Structure
 ```
 SimpleAgent/
-├── ingestion.py          # PDF loading and chunking
-├── embeddings.py         # Vector embeddings + ChromaDB
-├── query_system.py       # Semantic search + confidence scoring
-├── llm_handler.py        # Ollama/Mistral integration
-├── web_search_handler.py # Tavily API fallback
-├── rag_pipeline.py       # Main orchestration logic
-├── main.py               # CLI entry point
-├── streamlit_ui.py       # Web UI
-└── data/                  # PDF storage
+├── data/                     # PDF storage
+├── chroma_db/                # Vector database (auto-generated)
+├── venv_SimpleAgent/         # Virtual environment
+├── __pycache__/              # Python cache
+├── .gitignore
+├── LICENSE
+├── readme.md
+├── requirements.txt
+├── ingestion.py              # PDF loading and chunking
+├── embeddings.py             # Vector embeddings + ChromaDB
+├── query_system.py           # Semantic search + confidence scoring
+├── llm_handler.py            # Ollama/Mistral integration
+├── web_search_handler.py     # Tavily API fallback
+├── rag_pipeline.py           # Main orchestration logic
+├── main.py                   # CLI entry point
+└── streamlit_ui.py           # Web UI
 ```
 
 ## 🔒 Privacy

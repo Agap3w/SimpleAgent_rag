@@ -1,0 +1,8 @@
+torch
+sentence-transformers
+chromadb
+pypdf
+langchain-text-splitters
+requests
+streamlit
+tqdm
