@@ -2,7 +2,7 @@
 
 A local-first Retrieval-Augmented Generation system that answers questions about your PDF documents, with automatic web search fallback when confidence is low.
 
-![live screenshot](images/logo.png)
+![screenshot taken while using the app](data\SimpleAgent_screenshot.png)
 
 ## 🎯 Features
 
